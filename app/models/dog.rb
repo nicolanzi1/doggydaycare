@@ -8,8 +8,12 @@
 #  updated_at :datetime         not null
 #  house_id   :integer          not null
 #
+# Indexes
+#
+#  index_dogs_on_name  (name)
+#
 class Dog < ApplicationRecord
-    validates :name, presence: true
+    validates :name, presence: true, uniqueness: true
     validate :check_name_length
 
     belongs_to :house,  # choice 1
@@ -28,9 +32,9 @@ class Dog < ApplicationRecord
         end
     end
 
-    # def toys
-    #     Toy.where({ dog_id: self.id })
-    # end
-    # => There is a better way to write this method through rails association.
-
+    def self.lookup_name_in_ms(name)
+        start = Time.now
+        Dog.where(name: name)
+        (Time.now - start) * 1000
+    end
 end
